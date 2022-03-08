@@ -33,4 +33,8 @@ public class PersonInfo {
     public void setTempleReady(Boolean templeReady) {
         isTempleReady = templeReady;
     }
+
+    public String toString() {
+        return id + "," + hasRecordHints + "," + isTempleReady;
+    }
 }

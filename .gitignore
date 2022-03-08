@@ -10,4 +10,4 @@ app/build
 gradle
 
 # Password file
-app/src/resources/user.txt
+app/src/resources
