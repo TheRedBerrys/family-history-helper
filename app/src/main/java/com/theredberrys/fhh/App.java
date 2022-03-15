@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        String username = "", password = "", startId = "", excludeId = "", personLimit = "";
+        String username = "", password = "", startId = "", excludeId = "", personLimit = "", includeSpouses = "";
         try {
             String filePath = new File("src/resources/user.txt").getAbsolutePath();
             System.out.println(filePath);
@@ -19,12 +19,14 @@ public class App {
             startId = reader.nextLine();
             excludeId = reader.nextLine();
             personLimit = reader.nextLine();
+            includeSpouses = reader.nextLine();
         } catch (Exception e) {
             System.out.println("You have to put your username and password in user.txt");
             System.exit(1);
         }
 
-        List<PersonInfo> persons = FamilysearchHelper.run(username, password, startId, excludeId, Integer.parseInt(personLimit));
+        List<PersonInfo> persons = FamilysearchHelper.run(username, password, startId, excludeId,
+                Integer.parseInt(personLimit), Boolean.parseBoolean(includeSpouses));
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/resources/persons.csv"));
@@ -35,7 +37,7 @@ public class App {
             }
             writer.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 }

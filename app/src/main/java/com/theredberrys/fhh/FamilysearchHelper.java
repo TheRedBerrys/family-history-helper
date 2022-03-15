@@ -21,17 +21,18 @@ public class FamilysearchHelper {
     private final List<PersonInfo> persons;
     private final Set<String> ids;
     private final int personLimit;
+    private boolean includeSpouses;
 
     public static List<PersonInfo> run(String username, String password,
                            String startingId, String excludeId,
-                           int personLimit) {
-        FamilysearchHelper instance = new FamilysearchHelper(username, password, startingId, excludeId, personLimit);
+                           int personLimit, boolean includeSpouses) {
+        FamilysearchHelper instance = new FamilysearchHelper(username, password, startingId, excludeId, personLimit, includeSpouses);
         return instance.start();
     }
 
     private FamilysearchHelper(String username, String password,
                                String startingId, String excludeId,
-                               int personLimit) {
+                               int personLimit, boolean includeSpouses) {
         this.username = username;
         this.password = password;
 
@@ -47,6 +48,7 @@ public class FamilysearchHelper {
         }
 
         this.personLimit = personLimit;
+        this.includeSpouses = includeSpouses;
     }
 
     private List<PersonInfo> start() {
@@ -96,25 +98,13 @@ public class FamilysearchHelper {
 
         JSONArray parents = json.optJSONArray("parents");
         for (int i = 0; parents != null && i < parents.length(); i++) {
-            JSONObject parent1 = parents.getJSONObject(i).optJSONObject("parent1");
-            if (parent1 != null) {
-                add(parent1.getString("id"));
-            }
-            JSONObject parent2 = parents.getJSONObject(i).optJSONObject("parent2");
-            if (parent2 != null) {
-                add(parent2.getString("id"));
-            }
+            addCouple(parents.getJSONObject(i));
         }
 
         JSONArray spouses = json.optJSONArray("spouses");
         for (int i = 0; spouses != null && i < spouses.length(); i++) {
-            JSONObject parent1 = spouses.getJSONObject(i).optJSONObject("parent1");
-            if (parent1 != null) {
-                add(parent1.getString("id"));
-            }
-            JSONObject parent2 = spouses.getJSONObject(i).optJSONObject("parent2");
-            if (parent2 != null) {
-                add(parent2.getString("id"));
+            if (includeSpouses) {
+                addCouple(spouses.getJSONObject(i));
             }
 
             JSONArray children = spouses.getJSONObject(i).optJSONArray("children");
@@ -124,6 +114,17 @@ public class FamilysearchHelper {
                     add(child.getString("id"));
                 }
             }
+        }
+    }
+
+    private void addCouple(JSONObject json) {
+        JSONObject parent1 = json.optJSONObject("parent1");
+        if (parent1 != null) {
+            add(parent1.getString("id"));
+        }
+        JSONObject parent2 = json.optJSONObject("parent2");
+        if (parent2 != null) {
+            add(parent2.getString("id"));
         }
     }
 
