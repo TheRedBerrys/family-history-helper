@@ -55,11 +55,16 @@ public class FamilysearchHelper {
         login(username, password);
 
         for (int i = 0; i < persons.size() && i < personLimit; i++) {
-            PersonInfo person = persons.get(i);
-            updateDetails(person);
-            updateRecordHints(person);
-            updateTemple(person);
-            System.out.println(person);
+            try {
+                PersonInfo person = persons.get(i);
+                updateDetails(person);
+                updateRecordHints(person);
+                updateTemple(person);
+                System.out.println(person);
+            } catch (Exception e) {
+                System.out.println("Error getting person details: " + i);
+                // Then just continue on
+            }
         }
 
         quit();
